@@ -1,12 +1,17 @@
 // Define HTML elements
 
 const board = document.getElementById('game-board');
+const instructionTxt = document.getElementById('instruction-text')
+const logo = document.getElementById('logo')
 
 // Define game Variable
-const gridSize = 25; 
+const gridSize = 15; 
 let snake = [{x: 10, y: 10}];
 let food = generateFood();
 let direction = 'right'
+let gameInterval;
+let gameSpeedDelay = 200;
+let gameStarted = false;
 
 // Draw game map, snake, food
 
@@ -43,7 +48,7 @@ function setPosition(element, position) {
 }
 
 // testing draw function
-draw();
+// draw();
 
 // Draw food function
 function drawFood() {
@@ -84,13 +89,80 @@ function move(){
 
     snake.unshift(head);
 
-    snake.pop();
+    if (head.x === food.x && head.y === food.y){
+        food = generateFood();
+        clearInterval(gameInterval); //clear the past interval
+        gameInterval = setInterval(()=>{
+            move();
+            draw();
+        }, gameSpeedDelay);
+    }
+    else {
+        
+        snake.pop();
+    }
+
 }
 
 // Test moving
 
-setInterval(()=>{
-    move(); // move first
-    draw(); // Then draw again new position
-}, 200);
+// setInterval(()=>{
+//     move(); // move first
+//     draw(); // Then draw again new position
+// }, 200);
 
+
+// Start game function
+
+function startGame() {
+    gameStarted = true;
+    instructionTxt.style.display = 'none';
+    logo.style.display = 'none';
+    gameInterval = setInterval(()=>{
+        move();
+        // checkCollision();
+        draw();
+    
+    },gameSpeedDelay)
+}
+
+// keypress Event listner
+
+function handelKeyPress(event) {
+    if ((!gameStarted && event.code === 'space') || (!gameStarted && event.key === ' ')){
+        startGame();
+    }  else {
+        switch (event.key) {
+            case "ArrowUp":
+                direction = 'up';            
+                break;
+            case "ArrowDown":
+                direction = 'down';            
+                break;
+            case "ArrowLeft":
+                direction = 'left';            
+                break;
+            case "ArrowRight":
+                direction = 'right';            
+                break;
+        
+        
+        }
+    }
+}
+
+
+document.addEventListener('keydown', handelKeyPress);
+
+function increaseSpeed() {
+    console.log(gameSpeedDelay);
+    if (gameSpeedDelay > 150) {
+        gameSpeedDelay -= 5;
+    } else if (gameSpeedDelay > 100) {
+        gameSpeedDelay -= 3;
+    } else if (gameSpeedDelay > 50) {
+        gameSpeedDelay -= 2;
+    } else if (gameSpeedDelay > 25) {
+        gameSpeedDelay -= 1;
+    }
+}
