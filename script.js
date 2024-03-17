@@ -3,9 +3,11 @@
 const board = document.getElementById('game-board');
 const instructionTxt = document.getElementById('instruction-text')
 const score = document.getElementById('score')
+const highScoreTxt = document.getElementById('highScore')
 
 // Define game Variable
-const gridSize = 15; 
+const gridSize = 20; 
+let highScore = 0;
 let snake = [{x: 10, y: 10}];
 let food = generateFood();
 let direction = 'right'
@@ -19,6 +21,7 @@ function draw() {
     board.innerHTML = ' ';
     drawSnake();
     drawFood();
+    updateScore();
 }
 
 // Draw snake
@@ -52,9 +55,11 @@ function setPosition(element, position) {
 
 // Draw food function
 function drawFood() {
+    if (gameStarted){
     const foodElement = createGameElement('div', 'food');
     setPosition(foodElement, food);   
-    board.appendChild(foodElement)  ;
+    board.appendChild(foodElement);
+}
 }
 
 
@@ -193,11 +198,22 @@ function resetGame() {
     updateScore();
 }
 
-// function updateScore() {
-//     const currentScore = snake.length -1;
-//     score.textContent = currentScore.toString().padStart(3, '0'); 
-// }
+function updateScore() {
+    const currentScore = snake.length -1;
+    score.textContent = currentScore.toString().padStart(3, '0'); 
+}
 
 function stopGame() {
+    clearInterval(gameInterval);
+    gameStarted = false ;
+    instructionTxt.style.display = 'block'
+    logo.style.display = 'block'
+}
 
+function updateHighScore() {
+    const currentScore = snake.length - 1;
+    if (currentScore > highScore) {
+        highScore = currentScore;
+        highScoreTxt.textContent = highScore.toString().padStart(3, '0');
+    }
 }

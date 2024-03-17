@@ -15,7 +15,13 @@ body{
     font-family: "VT323", monospace;
 }
 
-body,.snake {
+body{
+    background-image: url(junglebg.jpg);
+    background-repeat: no-repeat;
+    
+}
+
+.snake {
    background-color: #414141;
 }
 
